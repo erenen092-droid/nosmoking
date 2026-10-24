@@ -1,10 +1,12 @@
 {
   "name": "Dumanı Bırak Pro",
   "short_name": "Dumanı Bırak",
-  "start_url": "./index.html",
+  "start_url": "./index.html?standalone=true",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
   "background_color": "#0b0f19",
   "theme_color": "#0b0f19",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png",
