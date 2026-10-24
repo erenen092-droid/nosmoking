@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dumanı Bırak Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -68,10 +74,8 @@
         .badge-icon { font-size: 1.5rem; margin-bottom: 4px; }
         .badge-title { font-size: 0.68rem; font-weight: 600; color: var(--text-main); }
 
-
-
         /* Settings Inputs */
-        .settings-panel { background: var(--card-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border); display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .settings-panel { background: var(--card-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border); display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .input-group { display: flex; flex-direction: column; gap: 4px; }
         .input-group label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
         .input-group input { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #2d3748; background: #0b0f19; color: #fff; font-size: 0.85rem; text-align: center; }
@@ -98,14 +102,11 @@
             50% { transform: scale(1.3); background: rgba(16, 185, 129, 0.3); border-color: var(--accent-green); }
         }
     </style>
-<link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0f19">
 </head>
-
 <body>
 
     <div class="app-container">
@@ -141,10 +142,10 @@
             </div>
         </div>
 
-        <!-- Hayal Kumbarası (Hedef) -->
+        <!-- Hayal Kumbarası -->
         <div class="target-card">
             <div class="target-header">
-                <span>🎯 Hedef: <span id="target-name-display" style="color: var(--accent-blue);">Hedef Belirle</span></span>
+                <span>🎯 Hedef Birikim</span>
                 <span id="target-pct" style="color: var(--accent-green);">%0</span>
             </div>
             <div class="progress-bar"><div id="target-bar" class="progress-fill" style="background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));"></div></div>
@@ -154,7 +155,7 @@
             </div>
         </div>
 
-        <!-- Rozetler / Başarımlar -->
+        <!-- Rozetler -->
         <div class="section-title">Rozetler</div>
         <div class="badges-grid">
             <div id="badge-1" class="badge-card"><div class="badge-icon">🌱</div><div class="badge-title">24 Saat</div></div>
@@ -165,80 +166,106 @@
 
         <!-- Sağlık Durumu -->
         <div class="section-title">Vücut Yenilenmesi</div>
-        
         <div class="health-item">
-            <div class="health-header">
-                <span>Nabız & Kan Basıncı</span>
-                <span id="h1-pct">0%</span>
-            </div>
+            <div class="health-header"><span>Nabız & Kan Basıncı</span><span id="h1-pct">0%</span></div>
             <div class="progress-bar"><div id="h1-bar" class="progress-fill"></div></div>
         </div>
-
         <div class="health-item">
-            <div class="health-header">
-                <span>Kandaki Oksijen & CO Seviyesi</span>
-                <span id="h2-pct">0%</span>
-            </div>
+            <div class="health-header"><span>Kandaki Oksijen & CO</span><span id="h2-pct">0%</span></div>
             <div class="progress-bar"><div id="h2-bar" class="progress-fill"></div></div>
         </div>
-
         <div class="health-item">
-            <div class="health-header">
-                <span>Tat & Koku Duyusu</span>
-                <span id="h3-pct">0%</span>
-            </div>
+            <div class="health-header"><span>Tat & Koku Duyusu</span><span id="h3-pct">0%</span></div>
             <div class="progress-bar"><div id="h3-bar" class="progress-fill"></div></div>
         </div>
 
-        <!-- Parametre Ayarları -->
+        <!-- Parametre ve Bırakma Zamanı Ayarı -->
         <div class="section-title">Parametreler</div>
         <div class="settings-panel">
+            <div class="input-group" style="grid-column: span 2;">
+                <label style="color: var(--accent-green);">Bırakma Tarihi & Saati</label>
+                <input type="datetime-local" id="date-input" onchange="manualDateChange()" style="text-align: left; padding: 10px;">
+            </div>
             <div class="input-group">
                 <label>Paket (₺)</label>
-                <input type="number" id="price-input" value="80" onchange="saveSettings()">
+                <input type="number" id="price-input" value="125" onchange="saveSettings()">
             </div>
             <div class="input-group">
                 <label>Günde (Dal)</label>
                 <input type="number" id="count-input" value="20" onchange="saveSettings()">
             </div>
-            <div class="input-group">
-                <label>Hedef (₺)</label>
+            <div class="input-group" style="grid-column: span 2;">
+                <label>Hedef Birikim (₺)</label>
                 <input type="number" id="target-price-input" value="3000" onchange="saveSettings()">
             </div>
         </div>
 
         <!-- Aksiyon Butonları -->
         <div class="btn-group">
-            <button class="btn-reset" onclick="resetTimer()">Sıfırla</button>
+            <button class="btn-reset" onclick="resetToNow()">Şu An Yap</button>
             <button class="btn-sos" onclick="openSOS()">Kriz Geldi! 🚨</button>
         </div>
     </div>
 
-    <!-- SOS / Nefes Modalı -->
+    <!-- SOS Modal -->
     <div id="sosModal" class="modal">
         <div class="modal-content">
             <h3 style="color: var(--accent-blue); font-size: 1.2rem;">Krizi Birlikte Yasalım 🌬️</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Daire büyürken nefes al, küçülürken ver.</p>
-            
-            <div class="breath-circle" id="breath-text">Nefes Al</div>
-
+            <div class="breath-circle">Nefes Al</div>
             <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">İstek sadece 3-5 dakika içinde zirve yapıp yok olacak. Bir bardak soğuk su iç!</p>
             <button class="btn-sos" style="width: 100%;" onclick="closeSOS()">Harika, Geçti!</button>
         </div>
     </div>
 
     <script>
-        let packPrice = parseFloat(localStorage.getItem('packPrice')) || 80;
+        let packPrice = parseFloat(localStorage.getItem('packPrice')) || 125;
         let dailyCount = parseInt(localStorage.getItem('dailyCount')) || 20;
         let targetGoal = parseFloat(localStorage.getItem('targetGoal')) || 3000;
-        let startDate = localStorage.getItem('quitDate') ? new Date(localStorage.getItem('quitDate')) : new Date();
+        
+        // Tarih Alma Mantığı (ASLA Sıfırlanmaz)
+        let savedDateStr = localStorage.getItem('quitDate');
+        let startDate;
 
+        if (savedDateStr) {
+            startDate = new Date(savedDateStr);
+        } else {
+            startDate = new Date();
+            localStorage.setItem('quitDate', startDate.toISOString());
+        }
+
+        // Input Değerlerini Doldur
         document.getElementById('price-input').value = packPrice;
         document.getElementById('count-input').value = dailyCount;
         document.getElementById('target-price-input').value = targetGoal;
+        updateDateTimeInput(startDate);
+
+        function updateDateTimeInput(dateObj) {
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(dateObj - tzoffset)).toISOString().slice(0, 16);
+            document.getElementById('date-input').value = localISOTime;
+        }
+
+        function manualDateChange() {
+            const val = document.getElementById('date-input').value;
+            if (val) {
+                startDate = new Date(val);
+                localStorage.setItem('quitDate', startDate.toISOString());
+                updateStats();
+            }
+        }
+
+        function resetToNow() {
+            if(confirm("Bırakma tarihini tam şu an yapmak istiyor musun?")) {
+                startDate = new Date();
+                localStorage.setItem('quitDate', startDate.toISOString());
+                updateDateTimeInput(startDate);
+                updateStats();
+            }
+        }
 
         function saveSettings() {
-            packPrice = parseFloat(document.getElementById('price-input').value) || 80;
+            packPrice = parseFloat(document.getElementById('price-input').value) || 125;
             dailyCount = parseInt(document.getElementById('count-input').value) || 20;
             targetGoal = parseFloat(document.getElementById('target-price-input').value) || 3000;
 
@@ -254,7 +281,6 @@
             const diffSec = diffMs / 1000;
             const diffDays = diffSec / (3600 * 24);
 
-            // Zaman
             const seconds = Math.floor(diffSec % 60);
             const minutes = Math.floor((diffSec / 60) % 60);
             const hours = Math.floor((diffSec / 3600) % 24);
@@ -263,13 +289,11 @@
             document.getElementById('timer').innerText = `${days}g ${hours}s ${minutes}dk ${seconds}sn`;
             document.getElementById('quit-start-text').innerText = `Başlangıç: ${startDate.toLocaleDateString('tr-TR')} - ${startDate.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}`;
 
-            // Para
             const singleCigPrice = packPrice / 20;
             const cigsNotSmoked = diffDays * dailyCount;
             const savedMoney = cigsNotSmoked * singleCigPrice;
-            document.getElementById('money').innerText = `${savedMoney.toFixed(2)} ₺`;
 
-            // İstatistikler
+            document.getElementById('money').innerText = `${savedMoney.toFixed(2)} ₺`;
             document.getElementById('cigs-passed').innerText = Math.floor(cigsNotSmoked);
 
             const gainedMinutes = Math.floor(cigsNotSmoked * 11);
@@ -279,19 +303,16 @@
 
             document.getElementById('tar-avoided').innerText = `${(cigsNotSmoked * 10 / 1000).toFixed(1)} gr`;
 
-            // Hedef Hesaplama
             const targetPct = Math.min(100, Math.floor((savedMoney / targetGoal) * 100));
             document.getElementById('target-pct').innerText = `%${targetPct}`;
             document.getElementById('target-bar').style.width = `${targetPct}%`;
             document.getElementById('target-saved').innerText = `${savedMoney.toFixed(0)} ₺`;
             document.getElementById('target-goal').innerText = `${targetGoal} ₺`;
 
-            // Sağlık Barları
-            updateHealthBar('h1', diffSec, 20 * 60);       // 20 dk
-            updateHealthBar('h2', diffSec, 12 * 3600);     // 12 saat
-            updateHealthBar('h3', diffSec, 48 * 3600);     // 48 saat
+            updateHealthBar('h1', diffSec, 20 * 60);
+            updateHealthBar('h2', diffSec, 12 * 3600);
+            updateHealthBar('h3', diffSec, 48 * 3600);
 
-            // Rozetler
             if (diffDays >= 1) document.getElementById('badge-1').classList.add('unlocked');
             if (diffDays >= 3) document.getElementById('badge-2').classList.add('unlocked');
             if (diffDays >= 7) document.getElementById('badge-3').classList.add('unlocked');
@@ -302,14 +323,6 @@
             const pct = Math.min(100, Math.floor((currentSec / targetSec) * 100));
             document.getElementById(`${id}-pct`).innerText = `%${pct}`;
             document.getElementById(`${id}-bar`).style.width = `${pct}%`;
-        }
-
-        function resetTimer() {
-            if(confirm("Sayacı ve tüm ilerlemeyi sıfırlamak istediğinden emin misin?")) {
-                startDate = new Date();
-                localStorage.setItem('quitDate', startDate);
-                updateStats();
-            }
         }
 
         function openSOS() { document.getElementById('sosModal').style.display = 'flex'; }
