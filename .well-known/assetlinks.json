@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.erenen092_droid.twa",
+        "sha256_cert_fingerprints": ["B1:6F:83:E7:A1:50:F1:BD:5B:22:8C:1C:54:E4:DD:E9:5D:F3:0F:10:03:B3:78:58:D1:90:04:93:28:28:DD:BB"]
+      }
+    }]
